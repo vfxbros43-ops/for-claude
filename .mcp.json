@@ -4,6 +4,11 @@
       "type": "stdio",
       "command": "bash",
       "args": ["scripts/chrome-devtools-mcp.sh"]
+    },
+    "scrapling": {
+      "type": "stdio",
+      "command": "bash",
+      "args": ["scripts/scrapling-mcp.sh"]
     }
   }
 }

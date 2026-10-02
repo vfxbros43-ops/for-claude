@@ -12,6 +12,7 @@ set -uo pipefail
 AGENT_REACH_REF="a19a171fa980a0785849596492e0af4db800c82f"   # Panniantong/Agent-Reach v1.5.0
 GSTACK_REF="7fca42ad8b6c707b8a38f579f72bf3c4f7de6d85"        # garrytan/gstack v1.91.12
 MCPORTER_VERSION="0.14.2"
+SCRAPLING_VERSION="0.4.15"                                     # D4Vinci/Scrapling tag v0.4.15 = 333fa22
 
 # gstack skills that duplicate Chrome DevTools MCP (browser control) or
 # Agent-Reach (scraping), or that import real browser cookies. Removed after setup.
@@ -56,6 +57,15 @@ if ! have mcporter; then
 fi
 if have mcporter && ! mcporter config list 2>/dev/null | grep -q exa; then
   mcporter config add exa https://mcp.exa.ai/mcp --scope home >/dev/null 2>&1 || true
+fi
+
+# --- Scrapling (scraper + MCP server; no telemetry) ---------------------------
+if ! have scrapling; then
+  log "installing scrapling==${SCRAPLING_VERSION}"
+  uv tool install -q "scrapling[ai]==${SCRAPLING_VERSION}"
+  # Downloads the browsers used by its stealth/dynamic fetchers. Blocked in
+  # restricted cloud networks; the plain HTTP fetcher still works without it.
+  scrapling install >/dev/null 2>&1 || log "scrapling browser download failed (HTTP fetcher still works)"
 fi
 
 # --- gstack (prefixed skill names, no hooks, telemetry off) -------------------
